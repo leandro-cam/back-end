@@ -15,7 +15,7 @@ export const badRequest = (body: string): HttpResponse<string> => ({
   body,
 });
 
-export const serverError = (): HttpResponse<string> => ({
+export const serverError = (body?: string): HttpResponse<string> => ({
   statusCode: HttpStatusCode.SERVER_ERROR,
-  body: 'Something went wrong',
+  body: body || 'Something went wrong',
 });
