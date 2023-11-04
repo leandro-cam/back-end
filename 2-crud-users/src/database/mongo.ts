@@ -17,10 +17,8 @@ export const MongoClient = {
     console.log('Connected to mongodb!');
   },
 
-  mapMongoUserToUser(users: WithId<MongoUser>[]): User[] {
-    return users.map(({ _id, ...rest }) => ({
-      ...rest,
-      id: _id.toHexString(),
-    }));
+  createUserFromMongoUser(mongoUser: WithId<MongoUser>): User {
+    const { _id, ...rest } = mongoUser;
+    return { id: _id.toHexString(), ...rest };
   },
 };

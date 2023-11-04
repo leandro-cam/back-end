@@ -5,11 +5,11 @@ import { MongoUser } from '../mongo-protocols';
 
 export class MongoGetUsersRepository implements IGetUsersRepository {
   async getUsers(): Promise<User[]> {
-    const users = await MongoClient.db
+    const mongoUsers = await MongoClient.db
       .collection<MongoUser>('users')
       .find({})
       .toArray();
 
-    return MongoClient.mapMongoUserToUser(users);
+    return mongoUsers.map(MongoClient.createUserFromMongoUser);
   }
 }
