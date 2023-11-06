@@ -23,7 +23,7 @@ export class CreateUserController implements IController {
 
     if (typeof httpRequest?.body !== 'object') {
       return badRequest(
-        `Request must have in the body an object with os fields: ${bodyFields
+        `Request must have in the body an object with the fields: ${bodyFields
           .map((field) => `"${field}"`)
           .join(', ')}`,
       );
