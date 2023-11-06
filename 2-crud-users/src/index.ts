@@ -5,6 +5,8 @@ import { MongoGetUsersRepository } from './repositories/get-users/mongo-get-user
 import { GetUsersController } from './controllers/get-users/get-users';
 import { MongoCreateUserRepository } from './repositories/create-user/mongo-create-user';
 import { CreateUserController } from './controllers/create-user/create-user';
+import { MongoDeleteUserRepository } from './repositories/delete-user/mongo-delete-user';
+import { DeleteUserController } from './controllers/delete-user/delete-user';
 
 const main = async () => {
   config();
@@ -29,9 +31,20 @@ const main = async () => {
     const createUserController = new CreateUserController(
       mongoCreateUserRepository,
     );
-
     const { statusCode, body } = await createUserController.handle({
       body: req.body,
+    });
+
+    res.status(statusCode).send(body);
+  });
+
+  app.delete('/users/:userId', async (req, res) => {
+    const mongoDeleteUserRepository = new MongoDeleteUserRepository();
+    const deleteUserController = new DeleteUserController(
+      mongoDeleteUserRepository,
+    );
+    const { statusCode, body } = await deleteUserController.handle({
+      params: req.params,
     });
 
     res.status(statusCode).send(body);
