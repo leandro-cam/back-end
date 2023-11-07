@@ -35,7 +35,7 @@ export class UpdateUserController implements IController {
 
     if (isInvalidBody) {
       return badRequest(
-        `The request body has some invalid field. The allowed fields are: ${fieldsToString(
+        `Body have field not allowed. The allowed fields are: ${fieldsToString(
           bodyFields,
         )}`,
       );
