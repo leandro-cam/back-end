@@ -21,7 +21,7 @@ export class CreateUserController implements IController {
       'password',
     ];
 
-    if (typeof httpRequest?.body !== 'object') {
+    if (!httpRequest?.body || typeof httpRequest?.body !== 'object') {
       return badRequest(
         `Request must have in the body an object with the fields: ${fieldsToString(
           bodyFields,
@@ -29,18 +29,18 @@ export class CreateUserController implements IController {
       );
     }
 
-    if (Object.keys(httpRequest.body!).length !== bodyFields.length) {
+    for (const field of bodyFields) {
+      if (!httpRequest.body[field]?.length) {
+        return badRequest(`Body must have the field: "${field}"`);
+      }
+    }
+
+    if (Object.keys(httpRequest.body).length !== bodyFields.length) {
       return badRequest(
         `Body have field not allowed. The allowed fields are: ${fieldsToString(
           bodyFields,
         )}`,
       );
-    }
-
-    for (const field of bodyFields) {
-      if (!httpRequest.body![field]?.length) {
-        return badRequest(`Body must have the field: "${field}"`);
-      }
     }
 
     if (!validator.isEmail(httpRequest.body.email)) {
