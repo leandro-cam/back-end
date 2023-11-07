@@ -8,7 +8,7 @@ import { CreateUserController } from './controllers/create-user/create-user';
 import { MongoDeleteUserRepository } from './repositories/delete-user/mongo-delete-user';
 import { DeleteUserController } from './controllers/delete-user/delete-user';
 import { MongoUpdateUserRepository } from './repositories/update-user/mongo-update-user';
-import { UpdateUserController } from './controllers/update-user/update-user';
+import { UpdateUserSomeFieldController } from './controllers/update-user-some-field/update-user-some-field';
 
 const main = async () => {
   config();
@@ -54,10 +54,10 @@ const main = async () => {
 
   app.patch('/users/:userId', async (req, res) => {
     const mongoUpdateUserRepository = new MongoUpdateUserRepository();
-    const updateUserController = new UpdateUserController(
+    const updateUserSomeFieldController = new UpdateUserSomeFieldController(
       mongoUpdateUserRepository,
     );
-    const { statusCode, body } = await updateUserController.handle({
+    const { statusCode, body } = await updateUserSomeFieldController.handle({
       params: req.params,
       body: req.body,
     });

@@ -7,7 +7,7 @@ import {
   UpdateUserBodyField,
 } from './protocols';
 
-export class UpdateUserController implements IController {
+export class UpdateUserSomeFieldController implements IController {
   constructor(private readonly updateUserRepository: IUpdateUserRepository) {}
 
   async handle(
@@ -23,9 +23,9 @@ export class UpdateUserController implements IController {
 
     if (!body || typeof body !== 'object' || !Object.keys(body).length) {
       return badRequest(
-        `Request must have in the body an object, that accepts the fields: ${bodyFields
-          .map((field) => `"${field}"`)
-          .join(', ')}`,
+        `Request must have in the body an object, that accepts the fields: ${fieldsToString(
+          bodyFields,
+        )}`,
       );
     }
 
