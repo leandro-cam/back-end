@@ -19,3 +19,6 @@ export const serverError = (body?: string): HttpResponse<string> => ({
   statusCode: HttpStatusCode.SERVER_ERROR,
   body: body || 'Something went wrong',
 });
+
+export const fieldsToString = <T>(fields: T[]) =>
+  fields.map((field) => `"${field}"`).join(', ');

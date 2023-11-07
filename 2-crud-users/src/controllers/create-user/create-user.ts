@@ -1,6 +1,6 @@
 import validator from 'validator';
 import { User } from '../../models/user';
-import { badRequest, created, serverError } from '../helpers';
+import { badRequest, created, fieldsToString, serverError } from '../helpers';
 import { HttpRequest, HttpResponse, IController } from '../protocols';
 import {
   CreateUserBody,
@@ -23,9 +23,17 @@ export class CreateUserController implements IController {
 
     if (typeof httpRequest?.body !== 'object') {
       return badRequest(
-        `Request must have in the body an object with the fields: ${bodyFields
-          .map((field) => `"${field}"`)
-          .join(', ')}`,
+        `Request must have in the body an object with the fields: ${fieldsToString(
+          bodyFields,
+        )}`,
+      );
+    }
+
+    if (Object.keys(httpRequest.body!).length !== bodyFields.length) {
+      return badRequest(
+        `Body have field not allowed. The allowed fields are: ${fieldsToString(
+          bodyFields,
+        )}`,
       );
     }
 
