@@ -8,7 +8,8 @@ import { CreateUserController } from './controllers/create-user/create-user';
 import { MongoDeleteUserRepository } from './repositories/delete-user/mongo-delete-user';
 import { DeleteUserController } from './controllers/delete-user/delete-user';
 import { MongoUpdateUserRepository } from './repositories/update-user/mongo-update-user';
-import { UpdateUserSomeFieldController } from './controllers/update-user-some-field/update-user-some-field';
+import { UpdateUserSomeFieldController } from './controllers/update-user/update-user-some-field';
+import { UpdateUserAllFieldsController } from './controllers/update-user/update-user-all-fields';
 
 const main = async () => {
   config();
@@ -58,6 +59,19 @@ const main = async () => {
       mongoUpdateUserRepository,
     );
     const { statusCode, body } = await updateUserSomeFieldController.handle({
+      params: req.params,
+      body: req.body,
+    });
+
+    res.status(statusCode).send(body);
+  });
+
+  app.put('/users/:userId', async (req, res) => {
+    const mongoUpdateUserRepository = new MongoUpdateUserRepository();
+    const updateUserAllFieldsController = new UpdateUserAllFieldsController(
+      mongoUpdateUserRepository,
+    );
+    const { statusCode, body } = await updateUserAllFieldsController.handle({
       params: req.params,
       body: req.body,
     });
