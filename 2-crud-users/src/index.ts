@@ -10,6 +10,8 @@ import { DeleteUserController } from './controllers/delete-user/delete-user';
 import { MongoUpdateUserRepository } from './repositories/update-user/mongo-update-user';
 import { UpdateUserSomeFieldController } from './controllers/update-user/update-user-some-field';
 import { UpdateUserAllFieldsController } from './controllers/update-user/update-user-all-fields';
+import { MongoGetUserByIdRepository } from './repositories/get-user-by-id/mongo-get-user-by-id';
+import { GetUserByIdController } from './controllers/get-user-by-id/get-user-by-id';
 
 const main = async () => {
   config();
@@ -25,6 +27,18 @@ const main = async () => {
     const mongoGetUsersRepository = new MongoGetUsersRepository();
     const getUsersController = new GetUsersController(mongoGetUsersRepository);
     const { statusCode, body } = await getUsersController.handle();
+
+    res.status(statusCode).send(body);
+  });
+
+  app.get('/users/:userId', async (req, res) => {
+    const mongoGetUserByIdRepository = new MongoGetUserByIdRepository();
+    const getUserByIdController = new GetUserByIdController(
+      mongoGetUserByIdRepository,
+    );
+    const { statusCode, body } = await getUserByIdController.handle({
+      params: req.params,
+    });
 
     res.status(statusCode).send(body);
   });
