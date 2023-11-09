@@ -5,6 +5,10 @@ import {
 } from '../../controllers/update-user/protocols';
 import { MongoClient } from '../../database/mongo';
 import { MongoUser } from '../mongo-protocols';
+import {
+  NotFoundResponse,
+  ServerErrorResponse,
+} from '../../helpers/http-error-responses';
 
 export class MongoUpdateUserRepository implements IUpdateUserRepository {
   async updateUser(userId: string, body: UpdateUserBody) {
@@ -20,7 +24,7 @@ export class MongoUpdateUserRepository implements IUpdateUserRepository {
       );
 
     if (!modifiedCount) {
-      throw new Error('User was not updated');
+      throw new ServerErrorResponse('User was not updated');
     }
 
     const mongoUser = await MongoClient.db
@@ -28,7 +32,7 @@ export class MongoUpdateUserRepository implements IUpdateUserRepository {
       .findOne({ _id: new ObjectId(userId) });
 
     if (!mongoUser) {
-      throw new Error('User not found');
+      throw new NotFoundResponse('User not found');
     }
 
     return MongoClient.createUserFromMongoUser(mongoUser);

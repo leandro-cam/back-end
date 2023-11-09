@@ -1,5 +1,8 @@
+import { fieldsToString } from '../../helpers/fields-to-string';
+import { getErrorResponse } from '../../helpers/get-error-response';
+import { BadRequestResponse } from '../../helpers/http-error-responses';
+import { ok } from '../../helpers/http-successful-responses';
 import { User } from '../../models/user';
-import { badRequest, fieldsToString, ok, serverError } from '../helpers';
 import { HttpRequest, HttpResponse, IController } from '../protocols';
 import {
   IUpdateUserRepository,
@@ -22,25 +25,27 @@ export class UpdateUserAllFieldsController implements IController {
     ];
 
     if (!body || typeof body !== 'object') {
-      return badRequest(
+      return new BadRequestResponse(
         `Request must have in the body an object with the fields: ${fieldsToString(
           bodyFields,
         )}`,
-      );
+      ).response();
     }
 
     for (const field of bodyFields) {
       if (!body[field]?.length) {
-        return badRequest(`Body must have the field: "${field}"`);
+        return new BadRequestResponse(
+          `Body must have the field: "${field}"`,
+        ).response();
       }
     }
 
     if (Object.keys(body).length !== bodyFields.length) {
-      return badRequest(
+      return new BadRequestResponse(
         `Body have field not allowed. The allowed fields are: ${fieldsToString(
           bodyFields,
         )}`,
-      );
+      ).response();
     }
 
     try {
@@ -50,7 +55,7 @@ export class UpdateUserAllFieldsController implements IController {
       );
       return ok(user);
     } catch (error) {
-      return serverError((error as Error)?.message);
+      return getErrorResponse(error);
     }
   }
 }

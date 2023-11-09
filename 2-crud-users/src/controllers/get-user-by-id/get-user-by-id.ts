@@ -1,5 +1,6 @@
+import { getErrorResponse } from '../../helpers/get-error-response';
+import { ok } from '../../helpers/http-successful-responses';
 import { User } from '../../models/user';
-import { ok, serverError } from '../helpers';
 import { HttpRequest, HttpResponse, IController } from '../protocols';
 import { IGetUserByIdRepository } from './protocols';
 
@@ -15,7 +16,7 @@ export class GetUserByIdController implements IController {
       const user = await this.getUserByIdRepository.getUserById(userId);
       return ok(user);
     } catch (error) {
-      return serverError((error as Error)?.message);
+      return getErrorResponse(error);
     }
   }
 }

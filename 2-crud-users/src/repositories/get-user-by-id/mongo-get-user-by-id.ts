@@ -3,6 +3,7 @@ import { IGetUserByIdRepository } from '../../controllers/get-user-by-id/protoco
 import { MongoClient } from '../../database/mongo';
 import { User } from '../../models/user';
 import { MongoUser } from '../mongo-protocols';
+import { NotFoundResponse } from '../../helpers/http-error-responses';
 
 export class MongoGetUserByIdRepository implements IGetUserByIdRepository {
   async getUserById(userId: string): Promise<User> {
@@ -11,7 +12,7 @@ export class MongoGetUserByIdRepository implements IGetUserByIdRepository {
       .findOne({ _id: new ObjectId(userId) });
 
     if (!mongoUser) {
-      throw new Error('User not found');
+      throw new NotFoundResponse('User not found');
     }
 
     return MongoClient.createUserFromMongoUser(mongoUser);

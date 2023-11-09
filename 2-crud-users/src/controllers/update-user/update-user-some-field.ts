@@ -1,5 +1,8 @@
+import { fieldsToString } from '../../helpers/fields-to-string';
+import { getErrorResponse } from '../../helpers/get-error-response';
+import { BadRequestResponse } from '../../helpers/http-error-responses';
+import { ok } from '../../helpers/http-successful-responses';
 import { User } from '../../models/user';
-import { badRequest, fieldsToString, ok, serverError } from '../helpers';
 import { HttpRequest, HttpResponse, IController } from '../protocols';
 import {
   IUpdateUserRepository,
@@ -22,11 +25,11 @@ export class UpdateUserSomeFieldController implements IController {
     ];
 
     if (!body || typeof body !== 'object' || !Object.keys(body).length) {
-      return badRequest(
+      return new BadRequestResponse(
         `Request must have in the body an object, that accepts the fields: ${fieldsToString(
           bodyFields,
         )}`,
-      );
+      ).response();
     }
 
     const isInvalidBody = Object.keys(body).some(
@@ -34,11 +37,11 @@ export class UpdateUserSomeFieldController implements IController {
     );
 
     if (isInvalidBody) {
-      return badRequest(
+      return new BadRequestResponse(
         `Body have field not allowed. The allowed fields are: ${fieldsToString(
           bodyFields,
         )}`,
-      );
+      ).response();
     }
 
     try {
@@ -48,7 +51,7 @@ export class UpdateUserSomeFieldController implements IController {
       );
       return ok(user);
     } catch (error) {
-      return serverError((error as Error)?.message);
+      return getErrorResponse(error);
     }
   }
 }
