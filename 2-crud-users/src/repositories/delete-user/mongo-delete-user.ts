@@ -5,11 +5,11 @@ import {
   NotFoundResponse,
   ServerErrorResponse,
 } from '../../helpers/http-error-responses';
-import { User } from '../../models/user';
+import { User, UserEncrypted } from '../../models/user';
 import { MongoUser } from '../mongo-protocols';
 
 export class MongoDeleteUserRepository implements IDeleteUserRepository {
-  async deleteUser(userId: string): Promise<User> {
+  async deleteUser(userId: string): Promise<UserEncrypted> {
     const mongoUser = await MongoClient.db
       .collection<MongoUser>('users')
       .findOne({ _id: new ObjectId(userId) });
