@@ -1,7 +1,8 @@
 import { ObjectId } from 'mongodb';
 import {
   IUpdateUserRepository,
-  UpdateUserBody,
+  UpdateUserAllFieldsBody,
+  UpdateUserSomeFieldBody,
 } from '../../controllers/update-user/protocols';
 import { MongoClient } from '../../database/mongo';
 import { MongoUser } from '../mongo-protocols';
@@ -11,7 +12,10 @@ import {
 } from '../../helpers/http-error-responses';
 
 export class MongoUpdateUserRepository implements IUpdateUserRepository {
-  async updateUser(userId: string, body: UpdateUserBody) {
+  async updateUser(
+    userId: string,
+    body: UpdateUserAllFieldsBody | UpdateUserSomeFieldBody,
+  ) {
     const { modifiedCount } = await MongoClient.db
       .collection<MongoUser>('users')
       .updateOne(
