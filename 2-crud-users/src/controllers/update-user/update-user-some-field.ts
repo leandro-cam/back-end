@@ -23,10 +23,10 @@ export class UpdateUserSomeFieldController implements IController {
     updateUserBody: UpdateUserSomeFieldBody,
     passwordHash: string,
   ): UpdateUserSomeFieldBodyEncrypted {
+    const { password, ...rest } = updateUserBody;
     return {
-      firstName: updateUserBody.firstName,
-      lastName: updateUserBody.lastName,
-      passwordHash,
+      ...rest,
+      ...(passwordHash && { passwordHash }),
     };
   }
 
