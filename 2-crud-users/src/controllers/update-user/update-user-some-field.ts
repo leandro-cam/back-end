@@ -79,7 +79,10 @@ export class UpdateUserSomeFieldController implements IController {
 
     let userEncrypted: UserEncrypted;
     try {
-      userEncrypted = await this.updateUserRepository.updateUser(userId, body);
+      userEncrypted = await this.updateUserRepository.updateUser(
+        userId,
+        userBodyEncrypted,
+      );
     } catch (error) {
       return getErrorResponse(error);
     }
