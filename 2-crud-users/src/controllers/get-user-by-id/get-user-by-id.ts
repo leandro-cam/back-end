@@ -1,6 +1,7 @@
+import { createUserWithoutPasswordFromUserEncrypted } from '../../helpers/create-user-without-password-from-user-encrypted';
 import { getErrorResponse } from '../../helpers/get-error-response';
 import { ok } from '../../helpers/http-successful-responses';
-import { User } from '../../models/user';
+import { User, UserEncrypted, UserWithoutPassword } from '../../models/user';
 import { HttpRequest, HttpResponse, IController } from '../protocols';
 import { IGetUserByIdRepository } from './protocols';
 
@@ -9,14 +10,19 @@ export class GetUserByIdController implements IController {
 
   async handle(
     httpRequest: HttpRequest<unknown>,
-  ): Promise<HttpResponse<User | string>> {
+  ): Promise<HttpResponse<UserWithoutPassword | string>> {
     const userId = httpRequest.params.userId;
 
+    let userEncrypted: UserEncrypted;
     try {
-      const user = await this.getUserByIdRepository.getUserById(userId);
-      return ok(user);
+      userEncrypted = await this.getUserByIdRepository.getUserById(userId);
     } catch (error) {
       return getErrorResponse(error);
     }
+
+    const userWithoutPassword =
+      createUserWithoutPasswordFromUserEncrypted(userEncrypted);
+
+    return ok(userWithoutPassword);
   }
 }

@@ -1,5 +1,5 @@
-import { User } from '../../models/user';
+import { User, UserEncrypted } from '../../models/user';
 
 export interface IGetUserByIdRepository {
-  getUserById(userId: string): Promise<User>;
+  getUserById(userId: string): Promise<UserEncrypted>;
 }
