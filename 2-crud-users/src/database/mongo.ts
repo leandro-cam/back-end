@@ -1,6 +1,6 @@
 import { MongoClient as Mongo, Db, WithId } from 'mongodb';
 import { MongoUser } from '../repositories/mongo-protocols';
-import { User } from '../models/user';
+import { User, UserEncrypted } from '../models/user';
 
 export const MongoClient = {
   client: undefined as unknown as Mongo,
@@ -17,7 +17,9 @@ export const MongoClient = {
     console.log('Connected to mongodb!');
   },
 
-  createUserFromMongoUser(mongoUser: WithId<MongoUser>): User {
+  createUserEncryptedFromMongoUser(
+    mongoUser: WithId<MongoUser>,
+  ): UserEncrypted {
     const { _id, ...rest } = mongoUser;
     return { id: _id.toHexString(), ...rest };
   },

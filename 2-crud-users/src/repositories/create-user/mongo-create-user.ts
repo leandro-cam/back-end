@@ -1,14 +1,15 @@
 import {
   CreateUserBody,
+  CreateUserBodyEncrypted,
   ICreateUserRepository,
 } from '../../controllers/create-user/protocols';
 import { MongoClient } from '../../database/mongo';
 import { ServerErrorResponse } from '../../helpers/http-error-responses';
-import { User } from '../../models/user';
+import { User, UserEncrypted } from '../../models/user';
 import { MongoUser } from '../mongo-protocols';
 
 export class MongoCreateUserRepository implements ICreateUserRepository {
-  async createUser(body: CreateUserBody): Promise<User> {
+  async createUser(body: CreateUserBodyEncrypted): Promise<UserEncrypted> {
     const { insertedId } = await MongoClient.db
       .collection('users')
       .insertOne(body);
@@ -21,6 +22,6 @@ export class MongoCreateUserRepository implements ICreateUserRepository {
       throw new ServerErrorResponse('User was not created. Please, try again');
     }
 
-    return MongoClient.createUserFromMongoUser(mongoUser);
+    return MongoClient.createUserEncryptedFromMongoUser(mongoUser);
   }
 }

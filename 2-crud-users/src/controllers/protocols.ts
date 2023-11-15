@@ -18,6 +18,10 @@ export interface HttpResponse<T> {
   body: T;
 }
 
+export type PasswordHashType = {
+  passwordHash: string;
+};
+
 export interface IController {
   handle(httpRequest: HttpRequest<unknown>): Promise<HttpResponse<unknown>>;
 }

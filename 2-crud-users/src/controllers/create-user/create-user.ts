@@ -1,22 +1,40 @@
+import { hash } from 'bcryptjs';
 import validator from 'validator';
 import { fieldsToString } from '../../helpers/fields-to-string';
 import { getErrorResponse } from '../../helpers/get-error-response';
-import { BadRequestResponse } from '../../helpers/http-error-responses';
+import {
+  BadRequestResponse,
+  ServerErrorResponse,
+} from '../../helpers/http-error-responses';
 import { created } from '../../helpers/http-successful-responses';
-import { User } from '../../models/user';
+import { User, UserEncrypted, UserWithoutPassword } from '../../models/user';
 import { HttpRequest, HttpResponse, IController } from '../protocols';
 import {
   CreateUserBody,
+  CreateUserBodyEncrypted,
   CreateUserBodyField,
   ICreateUserRepository,
 } from './protocols';
+import { createUserWithoutPasswordFromUserEncrypted } from '../../helpers/create-user-without-password-from-user-encrypted';
 
 export class CreateUserController implements IController {
   constructor(private readonly createUserRepository: ICreateUserRepository) {}
 
+  private static createUserBodyEncryptedFromCreateUserBody(
+    createUserBody: CreateUserBody,
+    passwordHash: string,
+  ): CreateUserBodyEncrypted {
+    return {
+      email: createUserBody.email,
+      firstName: createUserBody.firstName,
+      lastName: createUserBody.lastName,
+      passwordHash,
+    };
+  }
+
   async handle(
     httpRequest: HttpRequest<CreateUserBody>,
-  ): Promise<HttpResponse<User | string>> {
+  ): Promise<HttpResponse<UserWithoutPassword | string>> {
     const bodyFields: CreateUserBodyField[] = [
       'firstName',
       'lastName',
@@ -52,11 +70,31 @@ export class CreateUserController implements IController {
       return new BadRequestResponse('Body email is invalid').response();
     }
 
+    let passwordHash = '';
     try {
-      const user = await this.createUserRepository.createUser(httpRequest.body);
-      return created(user);
+      passwordHash = await hash(httpRequest.body.password, 8);
+    } catch (error) {
+      console.error(error);
+      throw new ServerErrorResponse('Failed to create password hash');
+    }
+
+    const userBodyEncrypted =
+      CreateUserController.createUserBodyEncryptedFromCreateUserBody(
+        httpRequest.body,
+        passwordHash,
+      );
+
+    let userEncrypted: UserEncrypted;
+    try {
+      userEncrypted =
+        await this.createUserRepository.createUser(userBodyEncrypted);
     } catch (error) {
       return getErrorResponse(error);
     }
+
+    const userWithoutPassword =
+      createUserWithoutPasswordFromUserEncrypted(userEncrypted);
+
+    return created(userWithoutPassword);
   }
 }

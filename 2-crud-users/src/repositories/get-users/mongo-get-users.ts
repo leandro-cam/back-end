@@ -10,6 +10,6 @@ export class MongoGetUsersRepository implements IGetUsersRepository {
       .find({})
       .toArray();
 
-    return mongoUsers.map(MongoClient.createUserFromMongoUser);
+    return mongoUsers.map(MongoClient.createUserEncryptedFromMongoUser);
   }
 }

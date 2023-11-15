@@ -26,6 +26,6 @@ export class MongoDeleteUserRepository implements IDeleteUserRepository {
       throw new ServerErrorResponse('User was not deleted');
     }
 
-    return MongoClient.createUserFromMongoUser(mongoUser);
+    return MongoClient.createUserEncryptedFromMongoUser(mongoUser);
   }
 }

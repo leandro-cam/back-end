@@ -15,6 +15,6 @@ export class MongoGetUserByIdRepository implements IGetUserByIdRepository {
       throw new NotFoundResponse('User not found');
     }
 
-    return MongoClient.createUserFromMongoUser(mongoUser);
+    return MongoClient.createUserEncryptedFromMongoUser(mongoUser);
   }
 }

@@ -35,6 +35,6 @@ export class MongoUpdateUserRepository implements IUpdateUserRepository {
       throw new NotFoundResponse('User not found');
     }
 
-    return MongoClient.createUserFromMongoUser(mongoUser);
+    return MongoClient.createUserEncryptedFromMongoUser(mongoUser);
   }
 }
