@@ -1,4 +1,5 @@
 import { hash } from 'bcryptjs';
+import { createUserWithoutPasswordFromUserEncrypted } from '../../helpers/create-user-without-password-from-user-encrypted';
 import { fieldsToString } from '../../helpers/fields-to-string';
 import { getErrorResponse } from '../../helpers/get-error-response';
 import {
@@ -6,7 +7,7 @@ import {
   ServerErrorResponse,
 } from '../../helpers/http-error-responses';
 import { ok } from '../../helpers/http-successful-responses';
-import { User, UserEncrypted, UserWithoutPassword } from '../../models/user';
+import { UserEncrypted, UserWithoutPassword } from '../../models/user';
 import { HttpRequest, HttpResponse, IController } from '../protocols';
 import {
   IUpdateUserRepository,
@@ -14,12 +15,11 @@ import {
   UpdateUserAllFieldsBodyEncrypted,
   UpdateUserBodyField,
 } from './protocols';
-import { createUserWithoutPasswordFromUserEncrypted } from '../../helpers/create-user-without-password-from-user-encrypted';
 
 export class UpdateUserAllFieldsController implements IController {
   constructor(private readonly updateUserRepository: IUpdateUserRepository) {}
 
-  private static createUpdateUserBodyEncryptedFromUpdateUserBody(
+  private static createUpdateUserAllFieldsBodyEncryptedFromUpdateUserAllFieldsBody(
     updateUserBody: UpdateUserAllFieldsBody,
     passwordHash: string,
   ): UpdateUserAllFieldsBodyEncrypted {
@@ -74,7 +74,7 @@ export class UpdateUserAllFieldsController implements IController {
     }
 
     const userBodyEncrypted =
-      UpdateUserAllFieldsController.createUpdateUserBodyEncryptedFromUpdateUserBody(
+      UpdateUserAllFieldsController.createUpdateUserAllFieldsBodyEncryptedFromUpdateUserAllFieldsBody(
         body,
         passwordHash,
       );
