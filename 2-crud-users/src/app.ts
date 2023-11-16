@@ -9,15 +9,9 @@ class App {
   constructor() {
     config();
 
-    this.database();
-
     this.use();
     this.routes();
     this.listen();
-  }
-
-  async database() {
-    await MongoClient.connect();
   }
 
   use() {
