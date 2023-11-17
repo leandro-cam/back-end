@@ -14,3 +14,7 @@ export interface UserEncrypted extends CommonUser {
 }
 
 export interface UserWithoutPassword extends CommonUser {}
+
+export interface UserWithToken extends UserWithoutPassword {
+  token: string;
+}

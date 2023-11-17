@@ -1,6 +1,6 @@
 import { config } from 'dotenv';
 import express from 'express';
-import { MongoClient } from './database/mongo';
+import tokenRoutes from './routes/token-routes';
 import userRoutes from './routes/user-routes';
 
 class App {
@@ -22,6 +22,7 @@ class App {
 
   routes() {
     this.app.use('/', userRoutes);
+    this.app.use('/', tokenRoutes);
   }
 
   listen() {
