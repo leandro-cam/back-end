@@ -10,8 +10,16 @@ import { MongoDeleteUserRepository } from '../repositories/delete-user/mongo-del
 import { MongoGetUserByIdRepository } from '../repositories/get-user-by-id/mongo-get-user-by-id';
 import { MongoGetUsersRepository } from '../repositories/get-users/mongo-get-users';
 import { MongoUpdateUserRepository } from '../repositories/update-user/mongo-update-user';
+import { LoginRequiredMiddleware } from '../middlewares/login-required';
 
 const router = Router();
+
+const mongoGetUserByIdRepository = new MongoGetUserByIdRepository();
+const loginRequiredMiddleware = new LoginRequiredMiddleware(
+  mongoGetUserByIdRepository,
+);
+
+console.log(loginRequiredMiddleware.getUserByIdRepository.getUserById);
 
 router.get('/users', async (_, res) => {
   const mongoGetUsersRepository = new MongoGetUsersRepository();
@@ -22,7 +30,6 @@ router.get('/users', async (_, res) => {
 });
 
 router.get('/users/:userId', async (req, res) => {
-  const mongoGetUserByIdRepository = new MongoGetUserByIdRepository();
   const getUserByIdController = new GetUserByIdController(
     mongoGetUserByIdRepository,
   );
@@ -45,42 +52,54 @@ router.post('/users', async (req, res) => {
   res.status(statusCode).send(body);
 });
 
-router.delete('/users/:userId', async (req, res) => {
-  const mongoDeleteUserRepository = new MongoDeleteUserRepository();
-  const deleteUserController = new DeleteUserController(
-    mongoDeleteUserRepository,
-  );
-  const { statusCode, body } = await deleteUserController.handle({
-    params: req.params,
-  });
+router.delete(
+  '/users/:userId',
+  loginRequiredMiddleware.handle.bind(loginRequiredMiddleware),
+  async (req, res) => {
+    const mongoDeleteUserRepository = new MongoDeleteUserRepository();
+    const deleteUserController = new DeleteUserController(
+      mongoDeleteUserRepository,
+    );
+    const { statusCode, body } = await deleteUserController.handle({
+      params: req.params,
+    });
 
-  res.status(statusCode).send(body);
-});
+    res.status(statusCode).send(body);
+  },
+);
 
-router.patch('/users/:userId', async (req, res) => {
-  const mongoUpdateUserRepository = new MongoUpdateUserRepository();
-  const updateUserSomeFieldController = new UpdateUserSomeFieldController(
-    mongoUpdateUserRepository,
-  );
-  const { statusCode, body } = await updateUserSomeFieldController.handle({
-    params: req.params,
-    body: req.body,
-  });
+router.patch(
+  '/users/:userId',
+  loginRequiredMiddleware.handle.bind(loginRequiredMiddleware),
+  async (req, res) => {
+    const mongoUpdateUserRepository = new MongoUpdateUserRepository();
+    const updateUserSomeFieldController = new UpdateUserSomeFieldController(
+      mongoUpdateUserRepository,
+    );
+    const { statusCode, body } = await updateUserSomeFieldController.handle({
+      params: req.params,
+      body: req.body,
+    });
 
-  res.status(statusCode).send(body);
-});
+    res.status(statusCode).send(body);
+  },
+);
 
-router.put('/users/:userId', async (req, res) => {
-  const mongoUpdateUserRepository = new MongoUpdateUserRepository();
-  const updateUserAllFieldsController = new UpdateUserAllFieldsController(
-    mongoUpdateUserRepository,
-  );
-  const { statusCode, body } = await updateUserAllFieldsController.handle({
-    params: req.params,
-    body: req.body,
-  });
+router.put(
+  '/users/:userId',
+  loginRequiredMiddleware.handle.bind(loginRequiredMiddleware),
+  async (req, res) => {
+    const mongoUpdateUserRepository = new MongoUpdateUserRepository();
+    const updateUserAllFieldsController = new UpdateUserAllFieldsController(
+      mongoUpdateUserRepository,
+    );
+    const { statusCode, body } = await updateUserAllFieldsController.handle({
+      params: req.params,
+      body: req.body,
+    });
 
-  res.status(statusCode).send(body);
-});
+    res.status(statusCode).send(body);
+  },
+);
 
 export default router;
