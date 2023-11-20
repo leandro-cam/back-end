@@ -7,7 +7,7 @@ class App {
   private app = express();
 
   constructor() {
-    config();
+    config({ path: '.env' });
 
     this.use();
     this.routes();
