@@ -1,7 +1,7 @@
 import { createUserWithoutPasswordFromUserEncrypted } from '../../helpers/create-user-without-password-from-user-encrypted';
 import { getErrorResponse } from '../../helpers/get-error-response';
 import { ok } from '../../helpers/http-successful-responses';
-import { User, UserEncrypted, UserWithoutPassword } from '../../models/user';
+import { UserEncrypted, UserWithoutPassword } from '../../models/user';
 import { HttpRequest, HttpResponse, IController } from '../protocols';
 import { IGetUserByIdRepository } from './protocols';
 

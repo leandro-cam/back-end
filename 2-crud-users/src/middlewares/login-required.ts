@@ -69,6 +69,11 @@ export class LoginRequiredMiddleware implements IMiddleware {
       await this.getUserByIdRepository.getUserById(id);
     } catch (error) {
       const { statusCode, body } = getErrorResponse(error);
+
+      if (statusCode === 404) {
+        return res.status(statusCode).send('Token user not found');
+      }
+
       return res.status(statusCode).send(body);
     }
 
