@@ -19,8 +19,6 @@ const loginRequiredMiddleware = new LoginRequiredMiddleware(
   mongoGetUserByIdRepository,
 );
 
-console.log(loginRequiredMiddleware.getUserByIdRepository.getUserById);
-
 router.get('/users', async (_, res) => {
   const mongoGetUsersRepository = new MongoGetUsersRepository();
   const getUsersController = new GetUsersController(mongoGetUsersRepository);
