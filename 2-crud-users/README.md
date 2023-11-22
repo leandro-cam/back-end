@@ -13,6 +13,8 @@ Além disso, criptografei a senha do usuário antes de salvá-la no banco, utili
 
 Eu aproveitei a API e adicionei token JWT nos endpoints PATCH, PUT e DELETE, utilizando a lib `jsonwebtoken`, em caráter de aprendizado, rsrs. Assim, antes de utilizar esses endpoints é preciso ser um usuário cadastrado e gerar um token através da rota: `POST /tokens`.
 
+A API foi deployada e pode ser acessada pelo navegador através do domínio: [https://crud-users-production.up.railway.app/users](https://crud-users-production.up.railway.app/users). Os demais endpoints também podem ser acessados através de uma plataforma de API, como o Postman.
+
 Para acessar o repositório da minha versão no GitHub, [clique aqui](https://github.com/leandro-cam/back-end/tree/main/2-crud-users).
 
 ## Tecnologias utilizadas
