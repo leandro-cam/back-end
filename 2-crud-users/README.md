@@ -7,7 +7,7 @@ Para acessar o repositório deste projeto, [clique aqui](https://github.com/feli
 
 Obrigado Felipe por compartilhar seu conhecimento, pela ótima explicação e projeto!
 
-Nesta minha versão, fiz boas modificações na estrutura da aplicação. Substituí o original arquivo principal: `index.ts` pelo arquivo `app.ts` em formato de classe, deixando-o menor e mais organizado, por estar separado em métodos. Coloquei as rotas do express em uma pasta e arquivo próprios: `routes/routes.ts`. Também mudei a estrutura das iniciais funções de erros https, colocando-as em classes, que sabem se tratar: `src/helpers/http-error-responses.ts`.
+Nesta minha versão, fiz boas modificações na estrutura da aplicação. Substituí o original arquivo principal: `index.ts` pelo arquivo `app.ts` em formato de classe, deixando-o menor e mais organizado, por estar separado em métodos. Coloquei as rotas do express em uma pasta e arquivo próprios: `routes/user-routes.ts`. Também mudei a estrutura das iniciais funções de erros https, colocando-as em classes, que sabem se tratar: `src/helpers/http-error-responses.ts`.
 
 Além disso, criptografei a senha do usuário antes de salvá-la no banco, utilizando a lib `bcryptjs`, e também deixei de retornar a senha dos usuários nas requisições, para que elas não fossem exibidas.
 
