@@ -77,6 +77,8 @@ export class LoginRequiredMiddleware implements IMiddleware {
       return res.status(statusCode).send(body);
     }
 
+    res.locals.userId = id;
+
     return next();
   }
 }

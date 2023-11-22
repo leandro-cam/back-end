@@ -22,6 +22,12 @@ export class BadRequestResponse extends BaseErrorResponse {
   }
 }
 
+export class ForbiddenResponse extends BaseErrorResponse {
+  constructor(message: string) {
+    super(HttpStatusCode.FORBIDDEN, message);
+  }
+}
+
 export class NotFoundResponse extends BaseErrorResponse {
   constructor(message: string) {
     super(HttpStatusCode.NOT_FOUND, message);

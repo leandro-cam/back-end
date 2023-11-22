@@ -11,6 +11,7 @@ import { MongoGetUserByIdRepository } from '../repositories/get-user-by-id/mongo
 import { MongoGetUsersRepository } from '../repositories/get-users/mongo-get-users';
 import { MongoUpdateUserRepository } from '../repositories/update-user/mongo-update-user';
 import { LoginRequiredMiddleware } from '../middlewares/login-required';
+import { isSameUserMiddleware } from '../middlewares/is-same-user';
 
 const router = Router();
 
@@ -53,6 +54,7 @@ router.post('/users', async (req, res) => {
 router.delete(
   '/users/:userId',
   loginRequiredMiddleware.handle.bind(loginRequiredMiddleware),
+  isSameUserMiddleware,
   async (req, res) => {
     const mongoDeleteUserRepository = new MongoDeleteUserRepository();
     const deleteUserController = new DeleteUserController(
@@ -69,6 +71,7 @@ router.delete(
 router.patch(
   '/users/:userId',
   loginRequiredMiddleware.handle.bind(loginRequiredMiddleware),
+  isSameUserMiddleware,
   async (req, res) => {
     const mongoUpdateUserRepository = new MongoUpdateUserRepository();
     const updateUserSomeFieldController = new UpdateUserSomeFieldController(
@@ -86,6 +89,7 @@ router.patch(
 router.put(
   '/users/:userId',
   loginRequiredMiddleware.handle.bind(loginRequiredMiddleware),
+  isSameUserMiddleware,
   async (req, res) => {
     const mongoUpdateUserRepository = new MongoUpdateUserRepository();
     const updateUserAllFieldsController = new UpdateUserAllFieldsController(
