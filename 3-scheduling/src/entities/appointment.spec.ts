@@ -17,6 +17,7 @@ it('should create an appointment', () => {
 it('should not create an appointment with endsAt less that startsAt', () => {
   const startsAt = addMinutes(new Date(), 5);
   const endsAt = new Date();
+  const error = new Error('endsAt date is invalid');
 
   expect(() => {
     new Appointment({
@@ -25,12 +26,13 @@ it('should not create an appointment with endsAt less that startsAt', () => {
       endsAt,
       durationInMinutes: 30,
     });
-  }).toThrow('endsAt date is invalid');
+  }).toThrowError(error);
 });
 
 it('should not create an appointment with endsAt equal to startsAt', () => {
   const startsAt = addMinutes(new Date(), 5);
   const endsAt = startsAt;
+  const error = new Error('endsAt date is invalid');
 
   expect(() => {
     new Appointment({
@@ -39,12 +41,13 @@ it('should not create an appointment with endsAt equal to startsAt', () => {
       endsAt,
       durationInMinutes: 30,
     });
-  }).toThrow('endsAt date is invalid');
+  }).toThrowError(error);
 });
 
 it('should not create an appointment when durationInMinutes is greater that endsAt - startsAt', () => {
   const startsAt = addMinutes(new Date(), 5);
   const endsAt = addMinutes(new Date(), 35);
+  const error = new Error('durationInMinutes is different of endsAt - startAt');
 
   expect(() => {
     new Appointment({
@@ -53,12 +56,13 @@ it('should not create an appointment when durationInMinutes is greater that ends
       endsAt,
       durationInMinutes: 40,
     });
-  }).toThrow('durationInMinutes is different of endsAt - startAt');
+  }).toThrowError(error);
 });
 
 it('should not create an appointment when durationInMinutes is less that endsAt - startsAt', () => {
   const startsAt = addMinutes(new Date(), 5);
   const endsAt = addMinutes(new Date(), 35);
+  const error = new Error('durationInMinutes is different of endsAt - startAt');
 
   expect(() => {
     new Appointment({
@@ -67,5 +71,5 @@ it('should not create an appointment when durationInMinutes is less that endsAt 
       endsAt,
       durationInMinutes: 20,
     });
-  }).toThrow('durationInMinutes is different of endsAt - startAt');
+  }).toThrowError(error);
 });
