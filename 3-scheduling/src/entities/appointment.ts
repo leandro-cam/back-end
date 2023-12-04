@@ -1,4 +1,4 @@
-import { differenceInMinutes } from 'date-fns';
+import { IDateLibrary } from '../libraries/protocols/date-library-interface';
 
 export interface AppointmentProps {
   customer: string;
@@ -8,9 +8,10 @@ export interface AppointmentProps {
 }
 
 export class Appointment {
-  constructor(private props: AppointmentProps) {
-    this.props = props;
-
+  constructor(
+    private dateLibrary: IDateLibrary,
+    private props: AppointmentProps,
+  ) {
     this.startsAt = props.startsAt;
     this.endsAt = props.endsAt;
     this.durationInMinutes = props.durationInMinutes;
@@ -49,7 +50,7 @@ export class Appointment {
   }
 
   set durationInMinutes(durationInMinutes: number) {
-    const calculatedDurationInMinutes = differenceInMinutes(
+    const calculatedDurationInMinutes = this.dateLibrary.differenceInMinutes(
       this.props.endsAt,
       this.props.startsAt,
     );

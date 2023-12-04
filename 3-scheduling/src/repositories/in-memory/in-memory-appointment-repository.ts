@@ -1,6 +1,6 @@
 import { Appointment } from '../../entities/appointment';
+import { IDateLibrary } from '../../libraries/protocols/date-library-interface';
 import { IAppointmentRepository } from '../protocols/appointment-repository-interface';
-import { areIntervalsOverlapping } from 'date-fns';
 
 export class InMemoryAppointmentRepository implements IAppointmentRepository {
   private appointments: Appointment[] = [];
@@ -12,9 +12,10 @@ export class InMemoryAppointmentRepository implements IAppointmentRepository {
   async findOverlappingAppointment(
     startsAt: Date,
     endsAt: Date,
+    dateLibrary: IDateLibrary,
   ): Promise<Appointment | null> {
     const overlappingAppointment = this.appointments.find((appointment) =>
-      areIntervalsOverlapping(
+      dateLibrary.areIntervalsOverlapping(
         { start: startsAt, end: endsAt },
         { start: appointment.startsAt, end: appointment.endsAt },
         { inclusive: false },

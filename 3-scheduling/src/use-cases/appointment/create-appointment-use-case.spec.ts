@@ -1,19 +1,21 @@
-import { it, expect } from 'vitest';
+import { beforeEach, expect, it } from 'vitest';
+import { Appointment } from '../../entities/appointment';
+import { dateLibraryDateFns } from '../../libraries/implementations/date-library-date-fns';
 import { InMemoryAppointmentRepository } from '../../repositories/in-memory/in-memory-appointment-repository';
+import { createAppointmentProps } from '../../utils/tests/create-appointment-props';
 import { CreateAppointmentUseCase } from './create-appointment-use-case';
-import { Appointment, AppointmentProps } from '../../entities/appointment';
-import { addMinutes } from 'date-fns';
 
-it('should not create appointment when passed time is equal to time already scheduled', async () => {
-  const createAppointmentUseCase = new CreateAppointmentUseCase(
+let createAppointmentUseCase: CreateAppointmentUseCase;
+
+beforeEach(() => {
+  createAppointmentUseCase = new CreateAppointmentUseCase(
+    dateLibraryDateFns,
     new InMemoryAppointmentRepository(),
   );
-  const appointmentProps: AppointmentProps = {
-    customer: 'John Doe',
-    startsAt: addMinutes(new Date(), 5),
-    endsAt: addMinutes(new Date(), 35),
-    durationInMinutes: 30,
-  };
+});
+
+it('should not create appointment when passed time is equal to time already scheduled', async () => {
+  const appointmentProps = createAppointmentProps({});
   const error = new Error('This time is already scheduled');
 
   await createAppointmentUseCase.execute(appointmentProps);
@@ -24,105 +26,65 @@ it('should not create appointment when passed time is equal to time already sche
 });
 
 it('should not create appointment when passed time starts in time already scheduled', async () => {
-  const createAppointmentUseCase = new CreateAppointmentUseCase(
-    new InMemoryAppointmentRepository(),
-  );
-  const appointmentProps: AppointmentProps = {
-    customer: 'John Doe',
-    startsAt: addMinutes(new Date(), 5),
-    endsAt: addMinutes(new Date(), 35),
-    durationInMinutes: 30,
-  };
   const error = new Error('This time is already scheduled');
 
-  await createAppointmentUseCase.execute(appointmentProps);
-
-  appointmentProps.startsAt = addMinutes(new Date(), 15);
-  appointmentProps.endsAt = addMinutes(new Date(), 45);
+  await createAppointmentUseCase.execute(createAppointmentProps({}));
 
   await expect(
-    createAppointmentUseCase.execute(appointmentProps),
+    createAppointmentUseCase.execute(
+      createAppointmentProps({
+        addMinutesInStart: 15,
+        addMinutesInEnd: 45,
+      }),
+    ),
   ).rejects.toThrowError(error);
 });
 
 it('should not create appointment when passed time ends in time already scheduled', async () => {
-  const createAppointmentUseCase = new CreateAppointmentUseCase(
-    new InMemoryAppointmentRepository(),
-  );
-  const appointmentProps: AppointmentProps = {
-    customer: 'John Doe',
-    startsAt: addMinutes(new Date(), 15),
-    endsAt: addMinutes(new Date(), 45),
-    durationInMinutes: 30,
-  };
   const error = new Error('This time is already scheduled');
 
-  await createAppointmentUseCase.execute(appointmentProps);
-
-  appointmentProps.startsAt = addMinutes(new Date(), 5);
-  appointmentProps.endsAt = addMinutes(new Date(), 35);
+  await createAppointmentUseCase.execute(
+    createAppointmentProps({
+      addMinutesInStart: 15,
+      addMinutesInEnd: 45,
+    }),
+  );
 
   await expect(
-    createAppointmentUseCase.execute(appointmentProps),
+    createAppointmentUseCase.execute(createAppointmentProps({})),
   ).rejects.toThrowError(error);
 });
 
 it('should create appointment when passed time is valid', async () => {
-  const createAppointmentUseCase = new CreateAppointmentUseCase(
-    new InMemoryAppointmentRepository(),
-  );
-  const appointmentProps: AppointmentProps = {
-    customer: 'John Doe',
-    startsAt: addMinutes(new Date(), 5),
-    endsAt: addMinutes(new Date(), 35),
-    durationInMinutes: 30,
-  };
-
   expect(
-    await createAppointmentUseCase.execute(appointmentProps),
+    await createAppointmentUseCase.execute(createAppointmentProps({})),
   ).toBeInstanceOf(Appointment);
 });
 
 it('should create appointment when it starts in the end of other appointment', async () => {
-  const createAppointmentUseCase = new CreateAppointmentUseCase(
-    new InMemoryAppointmentRepository(),
-  );
-
-  await createAppointmentUseCase.execute({
-    customer: 'John Doe',
-    startsAt: addMinutes(new Date(), 5),
-    endsAt: addMinutes(new Date(), 35),
-    durationInMinutes: 30,
-  });
+  await createAppointmentUseCase.execute(createAppointmentProps({}));
 
   expect(
-    await createAppointmentUseCase.execute({
-      customer: 'Fred Doe',
-      startsAt: addMinutes(new Date(), 35),
-      endsAt: addMinutes(new Date(), 65),
-      durationInMinutes: 30,
-    }),
+    await createAppointmentUseCase.execute(
+      createAppointmentProps({
+        customer: 'Fred Doe',
+        addMinutesInStart: 35,
+        addMinutesInEnd: 65,
+      }),
+    ),
   ).toBeInstanceOf(Appointment);
 });
 
 it('should create appointment when it ends in the start of other appointment', async () => {
-  const createAppointmentUseCase = new CreateAppointmentUseCase(
-    new InMemoryAppointmentRepository(),
+  await createAppointmentUseCase.execute(
+    createAppointmentProps({
+      customer: 'Fred Doe',
+      addMinutesInStart: 35,
+      addMinutesInEnd: 65,
+    }),
   );
 
-  await createAppointmentUseCase.execute({
-    customer: 'Fred Doe',
-    startsAt: addMinutes(new Date(), 35),
-    endsAt: addMinutes(new Date(), 65),
-    durationInMinutes: 30,
-  });
-
   expect(
-    await createAppointmentUseCase.execute({
-      customer: 'John Doe',
-      startsAt: addMinutes(new Date(), 5),
-      endsAt: addMinutes(new Date(), 35),
-      durationInMinutes: 30,
-    }),
+    await createAppointmentUseCase.execute(createAppointmentProps({})),
   ).toBeInstanceOf(Appointment);
 });
