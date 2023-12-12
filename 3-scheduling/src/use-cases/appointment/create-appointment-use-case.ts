@@ -10,14 +10,14 @@ export class CreateAppointmentUseCase {
 
   async execute(appointmentProps: AppointmentProps): Promise<Appointment> {
     const appointment = new Appointment(this.dateLibrary, appointmentProps);
-    const overlappingAppointment =
-      await this.appointmentRepository.findOverlappingAppointment(
-        appointment.startsAt,
-        appointment.endsAt,
+    const scheduledAppointment =
+      await this.appointmentRepository.findOneAppointmentByBarberAndDate(
         this.dateLibrary,
+        appointment.barber.id,
+        appointment.startsAt,
       );
 
-    if (overlappingAppointment) {
+    if (scheduledAppointment) {
       throw new Error('This time is already scheduled');
     }
 

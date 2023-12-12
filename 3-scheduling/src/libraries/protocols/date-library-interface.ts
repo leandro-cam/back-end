@@ -10,6 +10,8 @@ export interface IDateLibrary {
       inclusive?: boolean;
     },
   ): boolean;
+
+  isEqual(dateLeft: Date, dateRight: Date): boolean;
 }
 
 export type DateLibraryInterval = {

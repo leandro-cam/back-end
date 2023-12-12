@@ -1,10 +1,15 @@
 import { IDateLibrary } from '../libraries/protocols/date-library-interface';
+import { Barbershop } from './barbershop';
+import { Person } from './person';
 
 export interface AppointmentProps {
-  customer: string;
+  id: string;
+  customer: Person;
   startsAt: Date;
   endsAt: Date;
   durationInMinutes: number;
+  barbershop: Barbershop;
+  barber: Person;
 }
 
 export class Appointment {
@@ -60,5 +65,13 @@ export class Appointment {
     }
 
     this.props.durationInMinutes = durationInMinutes;
+  }
+
+  get barbershop() {
+    return this.props.barbershop;
+  }
+
+  get barber() {
+    return this.props.barber;
   }
 }

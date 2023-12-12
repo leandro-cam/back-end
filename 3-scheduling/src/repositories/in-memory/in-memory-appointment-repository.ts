@@ -9,6 +9,20 @@ export class InMemoryAppointmentRepository implements IAppointmentRepository {
     this.appointments.push(appointment);
   }
 
+  async findOneAppointmentByBarberAndDate(
+    dateLibrary: IDateLibrary,
+    barberId: string,
+    startsAt: Date,
+  ): Promise<Appointment | null> {
+    const appointment = this.appointments.find(
+      (appointment) =>
+        appointment.barber.id === barberId &&
+        dateLibrary.isEqual(appointment.startsAt, startsAt),
+    );
+
+    return appointment || null;
+  }
+
   async findOverlappingAppointment(
     startsAt: Date,
     endsAt: Date,

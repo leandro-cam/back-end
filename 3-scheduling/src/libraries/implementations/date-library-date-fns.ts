@@ -2,6 +2,7 @@ import {
   addMinutes,
   areIntervalsOverlapping,
   differenceInMinutes,
+  isEqual,
 } from 'date-fns';
 import {
   DateLibraryInterval,
@@ -9,11 +10,11 @@ import {
 } from '../protocols/date-library-interface';
 
 class DateLibraryDateFns implements IDateLibrary {
-  differenceInMinutes(dateLeft: Date, dateRight: Date): number {
+  differenceInMinutes(dateLeft: Date, dateRight: Date) {
     return differenceInMinutes(dateLeft, dateRight);
   }
 
-  addMinutes(date: Date, amount: number): Date {
+  addMinutes(date: Date, amount: number) {
     return addMinutes(date, amount);
   }
 
@@ -21,8 +22,12 @@ class DateLibraryDateFns implements IDateLibrary {
     intervalLeft: DateLibraryInterval,
     intervalRight: DateLibraryInterval,
     options?: { inclusive?: boolean },
-  ): boolean {
+  ) {
     return areIntervalsOverlapping(intervalLeft, intervalRight, options);
+  }
+
+  isEqual(dateLeft: Date, dateRight: Date) {
+    return isEqual(dateLeft, dateRight);
   }
 }
 

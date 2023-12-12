@@ -25,30 +25,10 @@ it('should not create appointment when passed time is equal to time already sche
   ).rejects.toThrowError(error);
 });
 
-it('should not create appointment when passed time starts in time already scheduled', async () => {
+it('should not create appointment when passed time starts in time already scheduled of the barber', async () => {
   const error = new Error('This time is already scheduled');
 
   await createAppointmentUseCase.execute(createAppointmentProps({}));
-
-  await expect(
-    createAppointmentUseCase.execute(
-      createAppointmentProps({
-        addMinutesInStart: 15,
-        addMinutesInEnd: 45,
-      }),
-    ),
-  ).rejects.toThrowError(error);
-});
-
-it('should not create appointment when passed time ends in time already scheduled', async () => {
-  const error = new Error('This time is already scheduled');
-
-  await createAppointmentUseCase.execute(
-    createAppointmentProps({
-      addMinutesInStart: 15,
-      addMinutesInEnd: 45,
-    }),
-  );
 
   await expect(
     createAppointmentUseCase.execute(createAppointmentProps({})),
@@ -61,13 +41,23 @@ it('should create appointment when passed time is valid', async () => {
   ).toBeInstanceOf(Appointment);
 });
 
+it('should create appointment when has two os more barbers and the switched not has that time already scheduled', async () => {
+  await createAppointmentUseCase.execute(createAppointmentProps({}));
+
+  expect(
+    await createAppointmentUseCase.execute(
+      createAppointmentProps({ barberId: '2' }),
+    ),
+  ).toBeInstanceOf(Appointment);
+});
+
 it('should create appointment when it starts in the end of other appointment', async () => {
   await createAppointmentUseCase.execute(createAppointmentProps({}));
 
   expect(
     await createAppointmentUseCase.execute(
       createAppointmentProps({
-        customer: 'Fred Doe',
+        customerName: 'Fred',
         addMinutesInStart: 35,
         addMinutesInEnd: 65,
       }),
@@ -78,7 +68,7 @@ it('should create appointment when it starts in the end of other appointment', a
 it('should create appointment when it ends in the start of other appointment', async () => {
   await createAppointmentUseCase.execute(
     createAppointmentProps({
-      customer: 'Fred Doe',
+      customerName: 'Fred',
       addMinutesInStart: 35,
       addMinutesInEnd: 65,
     }),
