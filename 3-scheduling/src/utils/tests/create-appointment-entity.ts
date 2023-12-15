@@ -22,6 +22,10 @@ export const createAppointmentEntity = ({
     barbershop: {
       id: '0',
       name: 'Barbershop',
+      state: 'Sao Paulo',
+      city: 'Sao Paulo',
+      neighborhood: 'Avenida Paulista',
+      number: '15',
       barbers: [
         {
           id: '1',
@@ -30,14 +34,6 @@ export const createAppointmentEntity = ({
           birthYear: new Date('15-05-1995'),
         },
       ],
-      address: {
-        id: '0',
-        country: 'Brazil',
-        state: 'Sao Paulo',
-        city: 'Sao Paulo',
-        neighborhood: 'Avenida Paulista',
-        number: '15',
-      },
     },
     barber: {
       id: '1',

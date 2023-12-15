@@ -23,6 +23,10 @@ export const createAppointmentProps = ({
     barbershop: {
       id: '0',
       name: 'Barbershop',
+      state: 'Sao Paulo',
+      city: 'Sao Paulo',
+      neighborhood: 'Avenida Paulista',
+      number: '15',
       barbers: [
         {
           id: '1',
@@ -37,14 +41,6 @@ export const createAppointmentProps = ({
           birthYear: new Date('22-07-1988'),
         },
       ],
-      address: {
-        id: '0',
-        country: 'Brazil',
-        state: 'Sao Paulo',
-        city: 'Sao Paulo',
-        neighborhood: 'Avenida Paulista',
-        number: '15',
-      },
     },
     barber:
       barberId === '1'
