@@ -2,7 +2,7 @@
 
 Um projeto de agendamento para barbearia! 
 
-O projeto foi inicialmente desenvolvido pelo [Diego Fernandes](https://github.com/diego3g) em uma [vídeo aula](https://www.youtube.com/watch?v=jBOLRzjEERk) no canal do Youtube da Rocketseat.
+O projeto foi inicialmente desenvolvido pelo [Diego Fernandes](https://github.com/diego3g){:target="_blank"} em uma [vídeo aula](https://www.youtube.com/watch?v=jBOLRzjEERk){:target="_blank"} no canal do Youtube da Rocketseat.
 
 A ideia do projeto era ser o mais simples possível, focando nas entidades, 
 nos casos de uso e na lógica. Ele não é uma API, é um protótipo inicial somente
