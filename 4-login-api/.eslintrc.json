@@ -28,6 +28,7 @@
         ],
         "alphabetize": { "order": "asc", "ignoreCase": true }
       }
-    ]
+    ],
+    "no-undef": "off"
   }
 }
