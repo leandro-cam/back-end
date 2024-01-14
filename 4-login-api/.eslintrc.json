@@ -5,5 +5,29 @@
   "extends": ["eslint:recommended", "prettier"],
   "parserOptions": {
     "sourceType": "module"
+  },
+  "plugins": ["eslint-plugin-import-helpers"],
+  "rules": {
+    "import-helpers/order-imports": [
+      "warn",
+      {
+        "newlinesBetween": "always",
+        "groups": [
+          ["/ˆnode/", "/ˆexpress/"],
+          ["module"],
+          "/^@/",
+          ["parent", "sibling", "index"],
+          "/middlewares/",
+          "/routes/",
+          "/controllers/",
+          "/services/",
+          "/repositories/",
+          "/utils/",
+          "/models/",
+          "/dtos/"
+        ],
+        "alphabetize": { "order": "asc", "ignoreCase": true }
+      }
+    ]
   }
 }
