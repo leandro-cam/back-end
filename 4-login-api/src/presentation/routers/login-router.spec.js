@@ -1,4 +1,5 @@
 const MissingParamError = require('../helpers/errors/missing-param-error');
+const ServerError = require('../helpers/errors/server-error');
 const UnauthorizedError = require('../helpers/errors/unauthorized-error');
 const LoginRouter = require('./login-router');
 
@@ -27,49 +28,53 @@ describe('Login Router', () => {
   test('should return 400 if email is not passed', () => {
     const { sut } = makeSut();
     const httpRequest = { body: { password: 'any_password' } };
-    const httpResponse = sut.route(httpRequest);
+    const { statusCode, body } = sut.route(httpRequest);
 
-    expect(httpResponse.statusCode).toBe(400);
-    expect(httpResponse.body).toEqual(new MissingParamError('email'));
+    expect(statusCode).toBe(400);
+    expect(body).toEqual(new MissingParamError('email'));
   });
 
   test('should return 400 if password is not passed', () => {
     const { sut } = makeSut();
     const httpRequest = { body: { email: 'any_email' } };
-    const httpResponse = sut.route(httpRequest);
+    const { statusCode, body } = sut.route(httpRequest);
 
-    expect(httpResponse.statusCode).toBe(400);
-    expect(httpResponse.body).toEqual(new MissingParamError('password'));
+    expect(statusCode).toBe(400);
+    expect(body).toEqual(new MissingParamError('password'));
   });
 
   test('should return 500 if httpRequest is not passed', () => {
     const { sut } = makeSut();
-    const httpResponse = sut.route();
+    const { statusCode, body } = sut.route();
 
-    expect(httpResponse.statusCode).toBe(500);
+    expect(statusCode).toBe(500);
+    expect(body).toEqual(new ServerError());
   });
 
   test('should return 500 if httpRequest has no body', () => {
     const { sut } = makeSut();
-    const httpResponse = sut.route({});
+    const { statusCode, body } = sut.route({});
 
-    expect(httpResponse.statusCode).toBe(500);
+    expect(statusCode).toBe(500);
+    expect(body).toEqual(new ServerError());
   });
 
   test('should return 500 if AuthUseCase is not passed', () => {
     const sut = new LoginRouter();
     const httpRequest = { body: { email: 'any_email', password: 'any_password' } };
-    const httpResponse = sut.route(httpRequest);
+    const { statusCode, body } = sut.route(httpRequest);
 
-    expect(httpResponse.statusCode).toBe(500);
+    expect(statusCode).toBe(500);
+    expect(body).toEqual(new ServerError());
   });
 
   test('should return 500 if AuthUseCase has no auth method', () => {
     const sut = new LoginRouter({});
     const httpRequest = { body: { email: 'any_email', password: 'any_password' } };
-    const httpResponse = sut.route(httpRequest);
+    const { statusCode, body } = sut.route(httpRequest);
 
-    expect(httpResponse.statusCode).toBe(500);
+    expect(statusCode).toBe(500);
+    expect(body).toEqual(new ServerError());
   });
 
   test('should call AuthUseCase with correct params', () => {
