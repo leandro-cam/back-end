@@ -87,17 +87,18 @@ describe('Login Router', () => {
     authUseCaseSpy.accessToken = null;
 
     const httpRequest = { body: { email: 'invalid_email', password: 'invalid_password' } };
-    const httpResponse = sut.route(httpRequest);
+    const { statusCode, body } = sut.route(httpRequest);
 
-    expect(httpResponse.statusCode).toBe(401);
-    expect(httpResponse.body).toEqual(new UnauthorizedError());
+    expect(statusCode).toBe(401);
+    expect(body).toEqual(new UnauthorizedError());
   });
 
   test('should return 200 when valid credentials are passed', () => {
-    const { sut } = makeSut();
+    const { authUseCaseSpy, sut } = makeSut();
     const httpRequest = { body: { email: 'valid_email', password: 'valid_password' } };
-    const httpResponse = sut.route(httpRequest);
+    const { statusCode, body } = sut.route(httpRequest);
 
-    expect(httpResponse.statusCode).toBe(200);
+    expect(statusCode).toBe(200);
+    expect(body.accessToken).toBe(authUseCaseSpy.accessToken);
   });
 });
