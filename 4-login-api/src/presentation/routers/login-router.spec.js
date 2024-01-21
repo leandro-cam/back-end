@@ -48,6 +48,7 @@ const makeEmailValidatorSpy = () => {
   class EmailValidatorSpy {
     // eslint-disable-next-line no-unused-vars
     isValid(email) {
+      this.email = email;
       return this.isValidEmail;
     }
   }
@@ -144,6 +145,16 @@ describe('Login Router', () => {
     expect(body).toEqual(new ServerError());
   });
 
+  test('should call AuthUseCase with correct params', async () => {
+    const { authUseCaseSpy, sut } = makeSut();
+    const httpRequest = { body: { email: 'any_email', password: 'any_password' } };
+
+    await sut.route(httpRequest);
+
+    expect(authUseCaseSpy.email).toBe(httpRequest.body.email);
+    expect(authUseCaseSpy.password).toBe(httpRequest.body.password);
+  });
+
   test('should return 500 if EmailValidator is not passed', async () => {
     const authUseCaseSpy = makeAuthUseCaseSpy();
     const sut = new LoginRouter(authUseCaseSpy);
@@ -175,14 +186,13 @@ describe('Login Router', () => {
     expect(body).toEqual(new ServerError());
   });
 
-  test('should call AuthUseCase with correct params', async () => {
-    const { authUseCaseSpy, sut } = makeSut();
+  test('should call EmailValidator with correct email', async () => {
+    const { emailValidatorSpy, sut } = makeSut();
     const httpRequest = { body: { email: 'any_email', password: 'any_password' } };
 
     await sut.route(httpRequest);
 
-    expect(authUseCaseSpy.email).toBe(httpRequest.body.email);
-    expect(authUseCaseSpy.password).toBe(httpRequest.body.password);
+    expect(emailValidatorSpy.email).toBe(httpRequest.body.email);
   });
 
   test('should return 401 when invalid credentials are passed', async () => {
