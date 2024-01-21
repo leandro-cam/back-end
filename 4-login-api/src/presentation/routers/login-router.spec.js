@@ -133,6 +133,26 @@ describe('Login Router', () => {
     expect(body).toEqual(new ServerError());
   });
 
+  test('should return 500 if EmailValidator is not passed', async () => {
+    const authUseCaseSpy = makeAuthUseCaseSpy();
+    const sut = new LoginRouter(authUseCaseSpy);
+    const httpRequest = { body: { email: 'any_email', password: 'any_password' } };
+    const { statusCode, body } = await sut.route(httpRequest);
+
+    expect(statusCode).toBe(500);
+    expect(body).toEqual(new ServerError());
+  });
+
+  test('should return 500 if EmailValidator has no isValid method', async () => {
+    const authUseCaseSpy = makeAuthUseCaseSpy();
+    const sut = new LoginRouter(authUseCaseSpy, {});
+    const httpRequest = { body: { email: 'any_email', password: 'any_password' } };
+    const { statusCode, body } = await sut.route(httpRequest);
+
+    expect(statusCode).toBe(500);
+    expect(body).toEqual(new ServerError());
+  });
+
   test('should call AuthUseCase with correct params', async () => {
     const { authUseCaseSpy, sut } = makeSut();
     const httpRequest = { body: { email: 'any_email', password: 'any_password' } };
