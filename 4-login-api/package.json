@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --watchAll --silent --colors --noStackTrace",
     "format": "prettier --write 'src/**/*.js'",
     "dev": "node src/main.js",
     "build": "",
