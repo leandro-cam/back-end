@@ -26,4 +26,13 @@ describe('EmailValidator', () => {
 
     expect(isValidEmail).toBe(false);
   });
+
+  test('should call validator with correct email', () => {
+    const sut = makeSut();
+    const email = 'any_email';
+
+    sut.isValid(email);
+
+    expect(validator.email).toBe(email);
+  });
 });
