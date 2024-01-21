@@ -67,7 +67,7 @@ const makeEmailValidatorWithErrorSpy = () => {
   return new EmailValidatorSpy();
 };
 
-describe('Login Router', () => {
+describe('LoginRouter', () => {
   test('should return 400 if email is not passed', async () => {
     const { sut } = makeSut();
     const httpRequest = { body: { password: 'any_password' } };
