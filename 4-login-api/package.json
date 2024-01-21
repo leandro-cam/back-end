@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --watchAll --silent --colors --noStackTrace",
+    "test": "jest --passWithNoTests --colors --noStackTrace",
+    "test:unit": "npm test -- --watch -c jest-unit-config.js",
+    "test:integration": "npm test -- --watch -c jest-integration-config.js",
     "format": "prettier --write 'src/**/*.js'",
     "dev": "node src/main.js",
     "build": "",
