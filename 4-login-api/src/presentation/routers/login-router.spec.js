@@ -58,6 +58,17 @@ const makeEmailValidatorSpy = () => {
   return emailValidatorSpy;
 };
 
+const makeEmailValidatorWithErrorSpy = () => {
+  class EmailValidatorSpy {
+    // eslint-disable-next-line no-unused-vars
+    isValid(email) {
+      throw new Error();
+    }
+  }
+
+  return new EmailValidatorSpy();
+};
+
 describe('Login Router', () => {
   test('should return 400 if email is not passed', async () => {
     const { sut } = makeSut();
@@ -146,6 +157,17 @@ describe('Login Router', () => {
   test('should return 500 if EmailValidator has no isValid method', async () => {
     const authUseCaseSpy = makeAuthUseCaseSpy();
     const sut = new LoginRouter(authUseCaseSpy, {});
+    const httpRequest = { body: { email: 'any_email', password: 'any_password' } };
+    const { statusCode, body } = await sut.route(httpRequest);
+
+    expect(statusCode).toBe(500);
+    expect(body).toEqual(new ServerError());
+  });
+
+  test('should return 500 if EmailValidator throw error', async () => {
+    const authUseCaseSpy = makeAuthUseCaseSpy();
+    const emailValidatorWithErrorSpy = makeEmailValidatorWithErrorSpy();
+    const sut = new LoginRouter(authUseCaseSpy, emailValidatorWithErrorSpy);
     const httpRequest = { body: { email: 'any_email', password: 'any_password' } };
     const { statusCode, body } = await sut.route(httpRequest);
 
