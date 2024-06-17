@@ -6,7 +6,7 @@ class AuthUseCase {
   }
 }
 
-describe('Auth UseCase', () => {
+describe('AuthUseCase', () => {
   test('should throw error if email is not provided', async () => {
     const sut = new AuthUseCase();
     const promise = sut.auth();
