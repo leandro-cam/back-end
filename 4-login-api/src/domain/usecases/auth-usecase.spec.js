@@ -25,19 +25,34 @@ const makeLoadUserByEmailRepository = () => {
   }
 
   const loadUserByEmailRepositorySpy = new LoadUserByEmailRepositorySpy();
-  loadUserByEmailRepositorySpy.user = { password: 'hashed_password' };
+  loadUserByEmailRepositorySpy.user = { id: 'any_id', password: 'hashed_password' };
   return loadUserByEmailRepositorySpy;
+};
+
+const makeTokenGenerator = () => {
+  class TokenGeneratorSpy {
+    async generate(userId) {
+      this.userId = userId;
+      return this.accessToken;
+    }
+  }
+
+  const tokenGeneratorSpy = new TokenGeneratorSpy();
+  tokenGeneratorSpy.accessToken = 'any_token';
+  return tokenGeneratorSpy;
 };
 
 const makeSut = () => {
   const encrypterSpy = makeEncrypter();
   const loadUserByEmailRepositorySpy = makeLoadUserByEmailRepository();
-  const sut = new AuthUseCase(loadUserByEmailRepositorySpy, encrypterSpy);
+  const tokenGeneratorSpy = makeTokenGenerator();
+  const sut = new AuthUseCase(loadUserByEmailRepositorySpy, encrypterSpy, tokenGeneratorSpy);
 
   return {
     sut,
     loadUserByEmailRepositorySpy,
     encrypterSpy,
+    tokenGeneratorSpy,
   };
 };
 
@@ -91,5 +106,11 @@ describe('AuthUseCase', () => {
     await sut.auth('valid_email@gmail.com', 'any_password');
     expect(encrypterSpy.password).toBe('any_password');
     expect(encrypterSpy.hashedPassword).toBe(loadUserByEmailRepositorySpy.user.password);
+  });
+
+  test('should call TokenGenerator with correct userId', async () => {
+    const { sut, loadUserByEmailRepositorySpy, tokenGeneratorSpy } = makeSut();
+    await sut.auth('valid_email@gmail.com', 'valid_password');
+    expect(tokenGeneratorSpy.userId).toBe(loadUserByEmailRepositorySpy.user.id);
   });
 });
