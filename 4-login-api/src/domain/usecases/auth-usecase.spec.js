@@ -176,7 +176,6 @@ describe('AuthUseCase', () => {
   });
 
   test('should continue throwing error if an error occur', async () => {
-    const invalid = {};
     const loadUserByEmailRepository = makeLoadUserByEmailRepository();
     const encrypter = makeEncrypter();
     const tokenGenerator = makeTokenGenerator();
