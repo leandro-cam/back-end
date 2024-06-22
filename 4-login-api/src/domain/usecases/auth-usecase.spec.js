@@ -2,6 +2,29 @@ const { MissingParamError } = require('../../utils/errors');
 
 const AuthUseCase = require('./auth-usecase');
 
+const makeLoadUserByEmailRepository = () => {
+  class LoadUserByEmailRepositorySpy {
+    async load(email) {
+      this.email = email;
+      return this.user;
+    }
+  }
+
+  const loadUserByEmailRepositorySpy = new LoadUserByEmailRepositorySpy();
+  loadUserByEmailRepositorySpy.user = { id: 'any_id', password: 'hashed_password' };
+  return loadUserByEmailRepositorySpy;
+};
+
+const makeLoadUserByEmailRepositoryWithError = () => {
+  class LoadUserByEmailRepositorySpy {
+    async load() {
+      throw new Error();
+    }
+  }
+
+  return new LoadUserByEmailRepositorySpy();
+};
+
 const makeEncrypter = () => {
   class EncrypterSpy {
     async compare(password, hashedPassword) {
@@ -16,17 +39,14 @@ const makeEncrypter = () => {
   return encrypterSpy;
 };
 
-const makeLoadUserByEmailRepository = () => {
-  class LoadUserByEmailRepositorySpy {
-    async load(email) {
-      this.email = email;
-      return this.user;
+const makeEncrypterWithError = () => {
+  class EncrypterSpy {
+    async compare() {
+      throw new Error();
     }
   }
 
-  const loadUserByEmailRepositorySpy = new LoadUserByEmailRepositorySpy();
-  loadUserByEmailRepositorySpy.user = { id: 'any_id', password: 'hashed_password' };
-  return loadUserByEmailRepositorySpy;
+  return new EncrypterSpy();
 };
 
 const makeTokenGenerator = () => {
@@ -40,6 +60,16 @@ const makeTokenGenerator = () => {
   const tokenGeneratorSpy = new TokenGeneratorSpy();
   tokenGeneratorSpy.accessToken = 'any_token';
   return tokenGeneratorSpy;
+};
+
+const makeTokenGeneratorWithError = () => {
+  class TokenGeneratorSpy {
+    async generate(userId) {
+      throw new Error();
+    }
+  }
+
+  return new TokenGeneratorSpy();
 };
 
 const makeSut = () => {
@@ -101,6 +131,23 @@ describe('AuthUseCase', () => {
         encrypter,
         tokenGenerator: invalid,
       }),
+    ];
+
+    suts.forEach((sut) => {
+      const promise = sut.auth('any_email@gmail.com', 'any_password');
+      expect(promise).rejects.toThrow();
+    });
+  });
+
+  test('should continue throwing error if an error occur', async () => {
+    const invalid = {};
+    const loadUserByEmailRepository = makeLoadUserByEmailRepository();
+    const encrypter = makeEncrypter();
+
+    const suts = [
+      new AuthUseCase({ loadUserByEmailRepository: makeLoadUserByEmailRepositoryWithError() }),
+      new AuthUseCase({ loadUserByEmailRepository, encrypter: makeEncrypterWithError() }),
+      new AuthUseCase({ loadUserByEmailRepository, encrypter, tokenGenerator: makeTokenGeneratorWithError() }),
     ];
 
     suts.forEach((sut) => {
