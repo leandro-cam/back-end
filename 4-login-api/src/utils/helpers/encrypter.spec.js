@@ -7,9 +7,13 @@ class Encrypter {
 }
 
 describe('Encrypter', () => {
-  test('should return true if bcrypt returns true', async () => {
+  beforeEach(() => {
     bcrypt.isValid = true;
+    bcrypt.value = undefined;
+    bcrypt.hash = undefined;
+  });
 
+  test('should return true if bcrypt returns true', async () => {
     const sut = new Encrypter();
     const isValid = await sut.compare('any_value', 'any_hash');
     expect(isValid).toBe(true);
@@ -21,5 +25,12 @@ describe('Encrypter', () => {
     const sut = new Encrypter();
     const isValid = await sut.compare('any_value', 'any_hash');
     expect(isValid).toBe(false);
+  });
+
+  test('should call bcrypt with correct values', async () => {
+    const sut = new Encrypter();
+    await sut.compare('any_value', 'any_hash');
+    expect(bcrypt.value).toBe('any_value');
+    expect(bcrypt.hash).toBe('any_hash');
   });
 });
