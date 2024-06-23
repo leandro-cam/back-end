@@ -6,13 +6,17 @@ class TokenGenerator {
   }
 }
 
+const makeSut = () => {
+  return new TokenGenerator();
+};
+
 describe('TokenGenerator', () => {
   beforeEach(() => {
     jwt.token = null;
   });
 
   test('should return null if JWT returns null', async () => {
-    const sut = new TokenGenerator();
+    const sut = makeSut();
     const token = await sut.generate('any_id');
     expect(token).toBeNull();
   });
@@ -20,7 +24,15 @@ describe('TokenGenerator', () => {
   test('should return token if JWT returns token', async () => {
     jwt.token = 'any_token';
 
-    const sut = new TokenGenerator();
+    const sut = makeSut();
+    const token = await sut.generate('any_id');
+    expect(token).toBe(jwt.token);
+  });
+
+  test('should call JWT with correct id', async () => {
+    jwt.token = 'any_token';
+
+    const sut = makeSut();
     const token = await sut.generate('any_id');
     expect(token).toBe(jwt.token);
   });
